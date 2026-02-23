@@ -1,5 +1,6 @@
 package com.casiowatch123.vchunklib.generation.virtual.world.chunk;
 
+import com.casiowatch123.vchunklib.VChunkLib;
 import com.casiowatch123.vchunklib.generation.virtual.world.VWorld;
 import com.casiowatch123.vchunklib.generation.virtual.world.VWorldContext;
 import com.casiowatch123.vchunklib.generation.virtual.world.VWorldService;
@@ -38,6 +39,7 @@ import net.minecraft.world.event.GameEvent;
 import net.minecraft.world.tick.MultiTickScheduler;
 import net.minecraft.world.tick.QueryableTickScheduler;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +48,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class VChunkRegion extends ChunkRegion{
-//    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final Logger LOGGER = VChunkLib.LOGGER;
     private final BoundedRegionArray<VChunkHolder> chunks;
     private final Chunk center;
     private final VWorldService worldService;
@@ -286,10 +288,7 @@ public class VChunkRegion extends ChunkRegion{
 
     @Override
     public boolean spawnEntity(Entity entity) {
-        int i = ChunkSectionPos.getSectionCoord(entity.getBlockX());
-        int j = ChunkSectionPos.getSectionCoord(entity.getBlockZ());
-        this.getChunk(i, j).addEntity(entity);
-        return true;
+        return false;
     }
 
     @Override
@@ -310,7 +309,12 @@ public class VChunkRegion extends ChunkRegion{
     @Deprecated
     @Override
     public ServerWorld toServerWorld() {
-        throw new UnsupportedOperationException("unsupported op : toServerWorld");
+        LOGGER.warn(
+                "Called unsupported method: {}#{}",
+                this.getClass().getName(),
+                "toServerWorld");
+        
+        return null;
     }
 
     @Override
@@ -444,6 +448,11 @@ public class VChunkRegion extends ChunkRegion{
     
     @Override
     public int getLightLevel(LightType type, BlockPos pos) {
+        return 15;
+    }
+    
+    @Override
+    public int getBaseLightLevel(BlockPos pos, int ambientDarkness) {
         return 15;
     }
 }

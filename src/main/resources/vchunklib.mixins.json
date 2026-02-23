@@ -4,7 +4,9 @@
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 		"ChunkRegionMixin", 
-        "StructureTemplateManagerMixin"
+        "StructureTemplateManagerMixin", 
+        "EntityTypeMixin", 
+        "CappedStructureProcessorMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

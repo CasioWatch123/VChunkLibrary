@@ -29,7 +29,7 @@ public class VChunkLoadingManager {
     }
     
     //return custom chunk type 
-    public VChunkHolder loadChunk(ChunkPos centerPos, int centerRadius) {
+    public BoundedRegionArray<VChunkHolder> loadChunk(ChunkPos centerPos, int centerRadius) {
         if (centerRadius < 0) {
             throw new IllegalArgumentException("center radius is wrong: " + centerRadius);
         }
@@ -57,7 +57,7 @@ public class VChunkLoadingManager {
             }
         }
         
-        return chunks.get(centerPos.x, centerPos.z);
+        return chunks;
     }
     
     //generate VChunkHolder chunks;
