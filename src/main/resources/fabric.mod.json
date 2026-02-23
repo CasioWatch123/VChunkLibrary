@@ -1,0 +1,30 @@
+{
+	"schemaVersion": 1,
+	"id": "vchunklib",
+	"version": "${version}",
+	"name": "VChunkLib",
+	"description": "virtual chunk library",
+	"authors": [
+		"CasioWatch123!"
+	],
+	"contact": {
+		"homepage": "https://github.com/CasioWatch123/",
+		"sources": "https://github.com/CasioWatch123/VChunkGenerator"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/vchunklib/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+		]
+	},
+	"mixins": [
+		"vchunklib.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
