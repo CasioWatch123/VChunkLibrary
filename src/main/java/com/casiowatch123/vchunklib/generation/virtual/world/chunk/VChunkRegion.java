@@ -49,7 +49,7 @@ import java.util.function.Supplier;
 
 public class VChunkRegion extends ChunkRegion{
     private static final Logger LOGGER = VChunkLib.LOGGER;
-    private final BoundedRegionArray<VChunkHolder> chunks;
+    private final BoundedRegionArray<Chunk> chunks;
     private final Chunk center;
     private final VWorldService worldService;
     private final VWorld world;
@@ -69,7 +69,7 @@ public class VChunkRegion extends ChunkRegion{
 
     public VChunkRegion(
             VWorldService worldService, 
-            BoundedRegionArray<VChunkHolder> chunks, 
+            BoundedRegionArray<Chunk> chunks, 
             VChunkGenerationStep generationStep, 
             Chunk center) {
         super(null, null, null, null);
@@ -109,14 +109,10 @@ public class VChunkRegion extends ChunkRegion{
     public Chunk getChunk(int chunkX, int chunkZ, ChunkStatus leastStatus, boolean create) {
         int i = this.center.getPos().getChebyshevDistance(chunkX, chunkZ);
         ChunkStatus chunkStatus = i >= this.generationStep.directDependencies().size() ? null : this.generationStep.directDependencies().get(i);
-        VChunkHolder chunkHolder;
         if (chunkStatus != null) {
-            chunkHolder = this.chunks.get(chunkX, chunkZ);
-            if (leastStatus.isAtMost(chunkStatus)) {
-                Chunk chunk = chunkHolder.getChunk();
-                if (chunk != null) {
-                    return chunk;
-                }
+            Chunk chunk = this.chunks.get(chunkX, chunkZ);
+            if (chunk != null) {
+                return chunk;
             }
         }
 

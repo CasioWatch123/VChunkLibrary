@@ -21,7 +21,7 @@ public record VChunkGenerationStep(
         return status == this.targetStatus ? 0 : this.accumulatedDependencies.getAdditionalLevel(status);
     }
 
-    public CompletableFuture<Chunk> run(VChunkGenerationContext context, BoundedRegionArray<VChunkHolder> boundedRegionArray, Chunk chunk) {
+    public CompletableFuture<Chunk> run(VChunkGenerationContext context, BoundedRegionArray<Chunk> boundedRegionArray, Chunk chunk) {
         if (chunk.getStatus().isEarlierThan(this.targetStatus)) {
             return this.task.doWork(context, this, boundedRegionArray, chunk).thenApply(generated -> this.finalizeGeneration(generated, null));
         } else {

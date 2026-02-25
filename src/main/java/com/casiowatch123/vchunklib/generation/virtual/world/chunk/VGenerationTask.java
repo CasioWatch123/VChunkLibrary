@@ -7,6 +7,6 @@ import java.util.concurrent.CompletableFuture;
 
 public interface VGenerationTask {
     CompletableFuture<Chunk> doWork(
-            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<VChunkHolder> boundedRegionArray, Chunk chunk
+            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<Chunk> boundedRegionArray, Chunk chunk
     );
 }

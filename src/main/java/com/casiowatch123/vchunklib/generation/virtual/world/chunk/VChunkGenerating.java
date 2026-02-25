@@ -27,13 +27,13 @@ public final class VChunkGenerating {
 //        addEntities
 //     */
     static CompletableFuture<Chunk> noop(
-            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<VChunkHolder> chunks, Chunk chunk
+            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<Chunk> chunks, Chunk chunk
     ) {
         return CompletableFuture.completedFuture(chunk);
     }
 
     static CompletableFuture<Chunk> generateStructures(
-            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<VChunkHolder> chunks, Chunk chunk
+            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<Chunk> chunks, Chunk chunk
     ) {
         VWorldService worldService = context.worldService();
         VWorldContext worldContext = worldService.worldContext();
@@ -56,13 +56,13 @@ public final class VChunkGenerating {
     }
 
     static CompletableFuture<Chunk> loadStructures(
-            VChunkGenerationContext context, ChunkGenerationStep step, BoundedRegionArray<VChunkHolder> chunks, Chunk chunk
+            VChunkGenerationContext context, ChunkGenerationStep step, BoundedRegionArray<Chunk> chunks, Chunk chunk
     ) {
         return CompletableFuture.completedFuture(chunk);
     }
 
     static CompletableFuture<Chunk> generateStructureReferences(
-            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<VChunkHolder> chunks, Chunk chunk
+            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<Chunk> chunks, Chunk chunk
     ) {
         VWorldService worldService = context.worldService();
         ChunkRegion chunkRegion = new VChunkRegion(worldService, chunks, step, chunk);
@@ -74,7 +74,7 @@ public final class VChunkGenerating {
     }
 
     static CompletableFuture<Chunk> populateBiomes(
-            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<VChunkHolder> chunks, Chunk chunk
+            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<Chunk> chunks, Chunk chunk
     ) {
         VWorldService worldService = context.worldService();
         ChunkRegion chunkRegion = new VChunkRegion(worldService, chunks, step, chunk);
@@ -90,7 +90,7 @@ public final class VChunkGenerating {
     }
 
     static CompletableFuture<Chunk> populateNoise(
-            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<VChunkHolder> chunks, Chunk chunk
+            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<Chunk> chunks, Chunk chunk
     ) {
         VWorldService worldService = context.worldService();
         ChunkRegion chunkRegion = new VChunkRegion(worldService, chunks, step, chunk);
@@ -106,7 +106,7 @@ public final class VChunkGenerating {
     }
 
     static CompletableFuture<Chunk> buildSurface(
-            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<VChunkHolder> chunks, Chunk chunk
+            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<Chunk> chunks, Chunk chunk
     ) {
         VWorldService worldService = context.worldService();
         ChunkRegion chunkRegion = new VChunkRegion(worldService, chunks, step, chunk);
@@ -119,7 +119,7 @@ public final class VChunkGenerating {
     }
 
     static CompletableFuture<Chunk> carve(
-            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<VChunkHolder> chunks, Chunk chunk
+            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<Chunk> chunks, Chunk chunk
     ) {
         VWorldService worldService = context.worldService();
         VWorldContext worldContext = worldService.worldContext();
@@ -142,7 +142,7 @@ public final class VChunkGenerating {
     }
 
     static CompletableFuture<Chunk> generateFeatures(
-            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<VChunkHolder> chunks, Chunk chunk
+            VChunkGenerationContext context, VChunkGenerationStep step, BoundedRegionArray<Chunk> chunks, Chunk chunk
     ) {
         Heightmap.populateHeightmaps(
                 chunk, EnumSet.of(Heightmap.Type.MOTION_BLOCKING, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, Heightmap.Type.OCEAN_FLOOR, Heightmap.Type.WORLD_SURFACE)

@@ -3,7 +3,6 @@ package com.casiowatch123.vchunklib.generation.virtual.world;
 import com.casiowatch123.vchunklib.generation.virtual.world.chunk.VChunkGenerationContext;
 import com.casiowatch123.vchunklib.generation.virtual.world.chunk.VChunkGenerationStep;
 import com.casiowatch123.vchunklib.generation.virtual.world.chunk.VChunkGenerationSteps;
-import com.casiowatch123.vchunklib.generation.virtual.world.chunk.VChunkHolder;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.collection.BoundedRegionArray;
 import net.minecraft.util.math.ChunkPos;
@@ -29,7 +28,7 @@ public class VChunkLoadingManager {
     }
     
     //return custom chunk type 
-    public BoundedRegionArray<VChunkHolder> loadChunk(ChunkPos centerPos, int centerRadius) {
+    public BoundedRegionArray<Chunk> loadChunk(ChunkPos centerPos, int centerRadius) {
         if (centerRadius < 0) {
             throw new IllegalArgumentException("center radius is wrong: " + centerRadius);
         }
@@ -38,7 +37,7 @@ public class VChunkLoadingManager {
         int radius = size/2;
         
         
-        BoundedRegionArray<VChunkHolder> chunks = this.generateRegion(centerPos, centerRadius);
+        BoundedRegionArray<Chunk> chunks = this.generateRegion(centerPos, centerRadius);
         
         for(ChunkStatus status : CHUNK_STATUS_LIST) {
             int currentGeneratingSize = 2 * (GENERATE_RADIUS_LIST.get(status.getIndex()) + centerRadius) + 1;
@@ -46,7 +45,7 @@ public class VChunkLoadingManager {
 //            System.out.println("current status: " + status + "(" + GENERATE_RADIUS_LIST.get(status.getIndex()) + ")");
 //            System.out.println("blank: " + blank);
 //            System.out.println("currentGeneratingSize: " + currentGeneratingSize);
-            
+
             VChunkGenerationStep step = VChunkGenerationSteps.GENERATION.get(status);
             for(int j = blank; j < size - blank; j++) {
                 for(int k = blank; k < size - blank; k++) {
@@ -56,21 +55,21 @@ public class VChunkLoadingManager {
                 }
             }
         }
-        
+
         return chunks;
     }
     
     //generate VChunkHolder chunks;
-    private BoundedRegionArray<VChunkHolder> generateRegion(ChunkPos centerPos, int centerRadius) {
+    private BoundedRegionArray<Chunk> generateRegion(ChunkPos centerPos, int centerRadius) {
         int size = 2 * (MAX_DEPENDENT_REGION_RADIUS + centerRadius) + 1;
         int radius = size/2;
-        
-        VChunkHolder[][] chunkHolders = new VChunkHolder[size][size];
+
+        Chunk[][] chunkHolders = new Chunk[size][size];
         
         for(int i = 0; i < size ; i++) {
             for(int j = 0; j < size ; j++) {
                 ChunkPos pos = new ChunkPos(centerPos.x - radius + i, centerPos.z - radius + j);
-                chunkHolders[i][j] = new VChunkHolder(pos, generateProtoChunk(pos));
+                chunkHolders[i][j] = generateProtoChunk(pos);
             }
         }
         
@@ -80,8 +79,8 @@ public class VChunkLoadingManager {
     }
     
     
-    private CompletableFuture<Chunk> generate(VChunkHolder chunkHolder, VChunkGenerationStep step, BoundedRegionArray<VChunkHolder> chunks) {
-        return step.run(this.generationContext, chunks, chunkHolder.getChunk());
+    private CompletableFuture<Chunk> generate(Chunk chunk, VChunkGenerationStep step, BoundedRegionArray<Chunk> chunks) {
+        return step.run(this.generationContext, chunks, chunk);
     }
     
     private ProtoChunk generateProtoChunk(ChunkPos chunkPos) {

@@ -6,7 +6,8 @@
 		"ChunkRegionMixin", 
         "StructureTemplateManagerMixin", 
         "EntityTypeMixin", 
-        "CappedStructureProcessorMixin"
+        "CappedStructureProcessorMixin", 
+        "FossilFeatureMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
