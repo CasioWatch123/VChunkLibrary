@@ -5,6 +5,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.featuretoggle.FeatureSet;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
@@ -30,6 +31,7 @@ public class VWorldContext {
     private final FeatureSet featureSet = FeatureFlags.VANILLA_FEATURES;
     private final WorldProperties worldProperties;
     private final StructurePlacementCalculator structurePlacementCalculator;
+    private final Identifier dimensionId;
     
     
     public VWorldContext(DynamicRegistryManager registryManager, VDimensionArgs dimensionArgs, long seed) {
@@ -39,7 +41,7 @@ public class VWorldContext {
         this.generatorOptions = new GeneratorOptions(seed, generateStructures, false);
         this.dimensionType = dimensionArgs.dimensionType();
         this.biomeSource = dimensionArgs.biomeSource();
-
+        this.dimensionId = dimensionArgs.dimensionId();
         
         this.generator = new NoiseChunkGenerator(biomeSource, dimensionArgs.chunkGeneratorSettingEntry());
         this.noiseConfig = NoiseConfig.create(
@@ -156,5 +158,9 @@ public class VWorldContext {
     
     public ChunkGenerator getGenerator() {
         return this.generator;
+    }
+    
+    public Identifier getDimensionId() {
+        return this.dimensionId;
     }
 }

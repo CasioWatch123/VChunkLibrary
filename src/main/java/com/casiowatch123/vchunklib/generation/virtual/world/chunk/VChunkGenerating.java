@@ -80,13 +80,11 @@ public final class VChunkGenerating {
         ChunkRegion chunkRegion = new VChunkRegion(worldService, chunks, step, chunk);
         VStructureAccessor structureAccessor =
                 new VStructureAccessor(chunkRegion, worldService.worldContext().getGeneratorOptions());
-        
-        CompletableFuture<Chunk> completableFuture = context.generator()
+
+        return context.generator()
                 .populateBiomes(
                         worldService.worldContext().getNoiseConfig(), Blender.getBlender(chunkRegion), structureAccessor, chunk
                 );
-        completableFuture.join();
-        return completableFuture;
     }
 
     static CompletableFuture<Chunk> populateNoise(
@@ -97,12 +95,10 @@ public final class VChunkGenerating {
         VStructureAccessor structureAccessor =
                 new VStructureAccessor(chunkRegion, worldService.worldContext().getGeneratorOptions());
 
-        CompletableFuture<Chunk> completableFuture = context.generator()
+        return context.generator()
                 .populateNoise(
                         Blender.getBlender(chunkRegion), worldService.worldContext().getNoiseConfig(), structureAccessor, chunk
                 );
-        completableFuture.join();
-        return completableFuture;
     }
 
     static CompletableFuture<Chunk> buildSurface(

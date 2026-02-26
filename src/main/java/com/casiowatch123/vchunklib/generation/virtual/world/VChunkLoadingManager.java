@@ -8,6 +8,7 @@ import net.minecraft.util.collection.BoundedRegionArray;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -47,13 +48,15 @@ public class VChunkLoadingManager {
 //            System.out.println("currentGeneratingSize: " + currentGeneratingSize);
 
             VChunkGenerationStep step = VChunkGenerationSteps.GENERATION.get(status);
+            List<CompletableFuture<Chunk>> futures = new ArrayList<>();
             for(int j = blank; j < size - blank; j++) {
                 for(int k = blank; k < size - blank; k++) {
                     int x = centerPos.x - radius + k;
                     int z = centerPos.z - radius + j;
-                    generate(chunks.get(x, z), step, chunks);
+                    futures.add(generate(chunks.get(x, z), step, chunks));
                 }
             }
+            CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).join();
         }
 
         return chunks;

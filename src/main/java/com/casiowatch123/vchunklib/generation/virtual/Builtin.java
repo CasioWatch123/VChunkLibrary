@@ -19,6 +19,7 @@ public final class Builtin {
     public static DynamicRegistryManager VANILLA_DRM = VUtils.createVanillaRegistryManager();
 
     public static VDimensionArgs OVERWORLD_ARGS = new VDimensionArgs(
+            DimensionTypes.OVERWORLD_ID, 
             VANILLA_DRM
                     .get(RegistryKeys.DIMENSION_TYPE)
                     .get(DimensionTypes.OVERWORLD),
@@ -34,6 +35,7 @@ public final class Builtin {
             STRUCTURE_TEMPLATE_MANAGER
     );
     public static VDimensionArgs NETHER_ARGS = new VDimensionArgs(
+            DimensionTypes.THE_NETHER_ID,
             VANILLA_DRM
                     .get(RegistryKeys.DIMENSION_TYPE)
                     .get(DimensionTypes.THE_NETHER),
@@ -49,6 +51,7 @@ public final class Builtin {
             STRUCTURE_TEMPLATE_MANAGER
     );
     public static VDimensionArgs END_ARGS = new VDimensionArgs(
+            DimensionTypes.THE_END_ID,
             VANILLA_DRM
                     .get(RegistryKeys.DIMENSION_TYPE)
                     .get(DimensionTypes.THE_END),
