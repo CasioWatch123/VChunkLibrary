@@ -7,6 +7,6 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 public record VChunkGenerationContext(
         VWorldService worldService,
         ChunkGenerator generator,
-        StructureTemplateManager structureManager
+        StructureTemplateManager structureTemplateManager
 ) {
 }

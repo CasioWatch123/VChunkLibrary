@@ -23,9 +23,12 @@ public class VChunkLoadingManager {
     private final VWorldService world;
     private final VChunkGenerationContext generationContext;
     
+    private final PalettesFactory palettesFactory;
+    
     public VChunkLoadingManager(VWorldService world) {
         this.world = world;
         this.generationContext = world.getGenerationContext();
+        this.palettesFactory = PalettesFactory.fromRegistryManager(world.worldContext().getRegistryManager());
     }
     
     //return custom chunk type 
@@ -91,7 +94,7 @@ public class VChunkLoadingManager {
                 chunkPos, 
                 UpgradeData.NO_UPGRADE_DATA, 
                 this.world.world(), 
-                this.world.worldContext().getRegistryManager().get(RegistryKeys.BIOME), 
+                palettesFactory, 
                 null
         );
     }

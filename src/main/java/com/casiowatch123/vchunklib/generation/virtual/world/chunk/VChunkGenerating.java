@@ -9,7 +9,6 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.chunk.*;
-import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.chunk.Blender;
 
 import java.util.EnumSet;
@@ -48,7 +47,8 @@ public final class VChunkGenerating {
                             worldContext.getStructurePlacementCalculator(),
                             structureAccessor,
                             chunk,
-                            context.structureManager()
+                            context.structureTemplateManager(), 
+                            worldContext.getDimensionKey()
                     );
         }
 
@@ -131,8 +131,7 @@ public final class VChunkGenerating {
                         worldContext.getNoiseConfig(),
                         new BiomeAccess(chunkRegion, BiomeAccess.hashSeed(worldContext.getSeed())),
                         structureAccessor,
-                        chunk,
-                        GenerationStep.Carver.AIR
+                        chunk
                 );
         return CompletableFuture.completedFuture(chunk);
     }

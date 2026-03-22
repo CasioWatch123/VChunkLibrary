@@ -50,12 +50,11 @@ import java.util.function.Supplier;
 public class VChunkRegion extends ChunkRegion{
     private static final Logger LOGGER = VChunkLib.LOGGER;
     private final BoundedRegionArray<Chunk> chunks;
-    private final Chunk center;
+    private final Chunk centerChunk;
     private final VWorldService worldService;
     private final VWorld world;
     private final VWorldContext worldContext;
     private final long seed;
-//    private final WorldProperties levelProperties; todo: getter throws UnsupportedException
     private final Random random;
     private final DimensionType dimension;
     private final MultiTickScheduler<Block> blockTickScheduler = new MultiTickScheduler<>(pos -> this.getChunk(pos).getBlockTickScheduler());
@@ -71,15 +70,15 @@ public class VChunkRegion extends ChunkRegion{
             VWorldService worldService, 
             BoundedRegionArray<Chunk> chunks, 
             VChunkGenerationStep generationStep, 
-            Chunk center) {
+            Chunk centerChunk) {
         super(null, null, null, null);
         this.worldService = worldService;
         this.world = worldService.world();
         this.worldContext = worldService.worldContext();
-        this.center = center;
+        this.centerChunk = centerChunk;
         this.chunks = chunks;
         this.seed = worldContext.getSeed();
-        this.random = worldContext.getNoiseConfig().getOrCreateRandomDeriver(WORLDGEN_REGION_RANDOM_ID).split(this.center.getPos().getStartPos());
+        this.random = worldContext.getNoiseConfig().getOrCreateRandomDeriver(WORLDGEN_REGION_RANDOM_ID).split(this.centerChunk.getPos().getStartPos());
         this.dimension = worldContext.getDimensionType();
         this.generationStep = generationStep;
         this.biomeAccess = new BiomeAccess(this, BiomeAccess.hashSeed(this.seed));
@@ -92,7 +91,7 @@ public class VChunkRegion extends ChunkRegion{
 
     @Override
     public ChunkPos getCenterPos() {
-        return this.center.getPos();
+        return this.centerChunk.getPos();
     }
 
     @Override
@@ -107,7 +106,7 @@ public class VChunkRegion extends ChunkRegion{
 
     @Override
     public Chunk getChunk(int chunkX, int chunkZ, ChunkStatus leastStatus, boolean create) {
-        int i = this.center.getPos().getChebyshevDistance(chunkX, chunkZ);
+        int i = this.centerChunk.getPos().getChebyshevDistance(chunkX, chunkZ);
         ChunkStatus chunkStatus = i >= this.generationStep.directDependencies().size() ? null : this.generationStep.directDependencies().get(i);
         if (chunkStatus != null) {
             Chunk chunk = this.chunks.get(chunkX, chunkZ);
@@ -121,7 +120,7 @@ public class VChunkRegion extends ChunkRegion{
 
     @Override
     public boolean isChunkLoaded(int chunkX, int chunkZ) {
-        int i = this.center.getPos().getChebyshevDistance(chunkX, chunkZ);
+        int i = this.centerChunk.getPos().getChebyshevDistance(chunkX, chunkZ);
         return i < this.generationStep.directDependencies().size();
     }
 
@@ -179,33 +178,34 @@ public class VChunkRegion extends ChunkRegion{
     @Nullable
     @Override
     public BlockEntity getBlockEntity(BlockPos pos) {
-        Chunk chunk = this.getChunk(pos);
-        BlockEntity blockEntity = chunk.getBlockEntity(pos);
-        if (blockEntity != null) {
-            return blockEntity;
-        } else {
-            NbtCompound nbtCompound = chunk.getBlockEntityNbt(pos);
-            BlockState blockState = chunk.getBlockState(pos);
-            if (nbtCompound != null) {
-                if ("DUMMY".equals(nbtCompound.getString("id"))) {
-                    if (!blockState.hasBlockEntity()) {
-                        return null;
-                    }
-
-                    blockEntity = ((BlockEntityProvider)blockState.getBlock()).createBlockEntity(pos, blockState);
-                } else {
-                    throw new UnsupportedOperationException();
-//                    blockEntity = BlockEntity.createFromNbt(pos, blockState, nbtCompound, worldContext.getRegistryManager());
-                }
-
-                if (blockEntity != null) {
-                    chunk.setBlockEntity(blockEntity);
-                    return blockEntity;
-                }
-            }
-
-            return null;
-        }
+        return null;
+//        Chunk chunk = this.getChunk(pos);
+//        BlockEntity blockEntity = chunk.getBlockEntity(pos);
+//        if (blockEntity != null) {
+//            return blockEntity;
+//        } else {
+//            NbtCompound nbtCompound = chunk.getBlockEntityNbt(pos);
+//            BlockState blockState = chunk.getBlockState(pos);
+//            if (nbtCompound != null) {
+//                if ("DUMMY".equals(nbtCompound.getString("id"))) {
+//                    if (!blockState.hasBlockEntity()) {
+//                        return null;
+//                    }
+//
+//                    blockEntity = ((BlockEntityProvider)blockState.getBlock()).createBlockEntity(pos, blockState);
+//                } else {
+//                    throw new UnsupportedOperationException();
+////                    blockEntity = BlockEntity.createFromNbt(pos, blockState, nbtCompound, worldContext.getRegistryManager());
+//                }
+//
+//                if (blockEntity != null) {
+//                    chunk.setBlockEntity(blockEntity);
+//                    return blockEntity;
+//                }
+//            }
+//
+//            return null;
+//        }
     }
 
     @Override
@@ -216,15 +216,16 @@ public class VChunkRegion extends ChunkRegion{
         int k = Math.abs(chunkPos.x - i);
         int l = Math.abs(chunkPos.z - j);
         if (k <= this.generationStep.blockStateWriteRadius() && l <= this.generationStep.blockStateWriteRadius()) {
-            if (this.center.hasBelowZeroRetrogen()) {
-                HeightLimitView heightLimitView = this.center.getHeightLimitView();
-                if (pos.getY() < heightLimitView.getBottomY() || pos.getY() >= heightLimitView.getTopY()) {
+            if (this.centerChunk.hasBelowZeroRetrogen()) {
+                HeightLimitView heightLimitView = this.centerChunk.getHeightLimitView();
+                if (heightLimitView.isOutOfHeightLimit(pos.getY())) {
                     return false;
                 }
             }
+
             return true;
         } else {
-            Util.error(
+            Util.logErrorOrPause(
                     "Detected setBlock in a far chunk ["
                             + i
                             + ", "
@@ -245,9 +246,9 @@ public class VChunkRegion extends ChunkRegion{
             return false;
         } else {
             Chunk chunk = this.getChunk(pos);
-            BlockState blockState = chunk.setBlockState(pos, state, false);
+            BlockState blockState = chunk.setBlockState(pos, state, flags);
             if (blockState != null) {
-//                this.world.onBlockChanged(pos, blockState, state);
+//                this.world.onBlockStateChanged(pos, blockState, state);
             }
 
             if (state.hasBlockEntity()) {
@@ -270,7 +271,7 @@ public class VChunkRegion extends ChunkRegion{
                 chunk.removeBlockEntity(pos);
             }
 
-            if (state.shouldPostProcess(this, pos)) {
+            if (state.shouldPostProcess(this, pos) && (flags & Block.FORCE_STATE) == 0) {
                 this.markBlockForPostProcessing(pos);
             }
 
@@ -380,18 +381,6 @@ public class VChunkRegion extends ChunkRegion{
     }
 
     @Override
-    public void playSound(@Nullable PlayerEntity source, BlockPos pos, SoundEvent sound, SoundCategory category, float volume, float pitch) {
-    }
-
-    @Override
-    public void addParticle(ParticleEffect parameters, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
-    }
-
-    @Override
-    public void syncWorldEvent(@Nullable PlayerEntity player, int eventId, BlockPos pos, int data) {
-    }
-
-    @Override
     public void emitGameEvent(RegistryEntry<GameEvent> event, Vec3d emitterPos, GameEvent.Emitter emitter) {
     }
 
@@ -450,5 +439,9 @@ public class VChunkRegion extends ChunkRegion{
     @Override
     public int getBaseLightLevel(BlockPos pos, int ambientDarkness) {
         return 15;
+    }
+    
+    public VWorldService getWorldService() {
+        return this.worldService;
     }
 }

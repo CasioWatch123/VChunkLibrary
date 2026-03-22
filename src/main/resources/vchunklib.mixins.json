@@ -5,9 +5,10 @@
 	"mixins": [
 		"ChunkRegionMixin", 
         "StructureTemplateManagerMixin", 
-        "EntityTypeMixin", 
         "CappedStructureProcessorMixin", 
-        "FossilFeatureMixin"
+        "FossilFeatureMixin", 
+        "EntityTypeMixin", 
+        "PaleMossTreeDecoratorMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

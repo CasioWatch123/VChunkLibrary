@@ -2,7 +2,6 @@ package com.casiowatch123.vchunklib.generation.virtual.world.chunk;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.util.collection.BoundedRegionArray;
-import net.minecraft.util.function.Finishable;
 import net.minecraft.world.chunk.*;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,19 +22,15 @@ public record VChunkGenerationStep(
 
     public CompletableFuture<Chunk> run(VChunkGenerationContext context, BoundedRegionArray<Chunk> boundedRegionArray, Chunk chunk) {
         if (chunk.getStatus().isEarlierThan(this.targetStatus)) {
-            return this.task.doWork(context, this, boundedRegionArray, chunk).thenApply(generated -> this.finalizeGeneration(generated, null));
+            return this.task.doWork(context, this, boundedRegionArray, chunk).thenApply(this::finalizeGeneration);
         } else {
             return this.task.doWork(context, this, boundedRegionArray, chunk);
         }
     }
 
-    private Chunk finalizeGeneration(Chunk chunk, @Nullable Finishable finishCallback) {
+    private Chunk finalizeGeneration(Chunk chunk) {
         if (chunk instanceof ProtoChunk protoChunk && protoChunk.getStatus().isEarlierThan(this.targetStatus)) {
             protoChunk.setStatus(this.targetStatus);
-        }
-
-        if (finishCallback != null) {
-            finishCallback.finish();
         }
 
         return chunk;

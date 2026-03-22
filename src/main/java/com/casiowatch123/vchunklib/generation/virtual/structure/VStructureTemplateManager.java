@@ -34,17 +34,17 @@ public class VStructureTemplateManager extends StructureTemplateManager {
     
     static {
         ModContainer container = FabricLoader.getInstance().getModContainer(VChunkLib.MOD_ID).orElseThrow();
-        
+
         for(var resourceRoot : container.getRootPaths()) {
             Path structureResourceRoot = resourceRoot
                     .resolve("data")
                     .resolve("vchunklib")
                     .resolve("structure");
-            
+
             if (!Files.exists(structureResourceRoot) || !Files.isDirectory(structureResourceRoot)) {
                 continue;
             }
-            
+
             try (Stream<Path> stream = Files.walk(structureResourceRoot)) {
                 stream.forEach(path -> {
                     if (!Files.isDirectory(path)) {

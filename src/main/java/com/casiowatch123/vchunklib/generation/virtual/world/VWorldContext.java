@@ -1,14 +1,13 @@
 package com.casiowatch123.vchunklib.generation.virtual.world;
 
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.*;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.featuretoggle.FeatureSet;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.GameRules;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldProperties;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -31,7 +30,7 @@ public class VWorldContext {
     private final FeatureSet featureSet = FeatureFlags.VANILLA_FEATURES;
     private final WorldProperties worldProperties;
     private final StructurePlacementCalculator structurePlacementCalculator;
-    private final Identifier dimensionId;
+    private final RegistryKey<World> dimensionKey;
     
     
     public VWorldContext(DynamicRegistryManager registryManager, VDimensionArgs dimensionArgs, long seed) {
@@ -41,24 +40,21 @@ public class VWorldContext {
         this.generatorOptions = new GeneratorOptions(seed, generateStructures, false);
         this.dimensionType = dimensionArgs.dimensionType();
         this.biomeSource = dimensionArgs.biomeSource();
-        this.dimensionId = dimensionArgs.dimensionId();
+        this.dimensionKey = dimensionArgs.dimensionKey();
         
         this.generator = new NoiseChunkGenerator(biomeSource, dimensionArgs.chunkGeneratorSettingEntry());
         this.noiseConfig = NoiseConfig.create(
                 generator.getSettings().value(),
-                registryManager.getWrapperOrThrow(RegistryKeys.NOISE_PARAMETERS),
+                registryManager.getOrThrow(RegistryKeys.NOISE_PARAMETERS), 
                 seed
         );
         this.worldProperties = new WorldProperties() {
-            private final GameRules gameRules = new GameRules();
+            private final SpawnPoint spawnPoint = new SpawnPoint(GlobalPos.create(
+                    dimensionKey, new BlockPos(0, 63, 0)), 
+                    0, 0);
             @Override
-            public BlockPos getSpawnPos() {
-                return new BlockPos(0, 63, 0);
-            }
-
-            @Override
-            public float getSpawnAngle() {
-                return 0;
+            public SpawnPoint getSpawnPoint() {
+                return spawnPoint;
             }
 
             @Override
@@ -83,17 +79,11 @@ public class VWorldContext {
 
             @Override
             public void setRaining(boolean raining) {
-
             }
 
             @Override
             public boolean isHardcore() {
                 return false;
-            }
-
-            @Override
-            public GameRules getGameRules() {
-                return gameRules;
             }
 
             @Override
@@ -111,7 +101,7 @@ public class VWorldContext {
                         noiseConfig,
                         seed,
                         biomeSource,
-                        registryManager.getWrapperOrThrow(RegistryKeys.STRUCTURE_SET)
+                        registryManager.getOrThrow(RegistryKeys.STRUCTURE_SET)
                 );
     }
 
@@ -160,7 +150,7 @@ public class VWorldContext {
         return this.generator;
     }
     
-    public Identifier getDimensionId() {
-        return this.dimensionId;
+    public RegistryKey<World> getDimensionKey() {
+        return this.dimensionKey;
     }
 }

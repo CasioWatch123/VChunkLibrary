@@ -1,7 +1,6 @@
 package com.casiowatch123.vchunklib.mixin;
 
-import com.casiowatch123.vchunklib.generation.virtual.Builtin;
-import com.casiowatch123.vchunklib.generation.virtual.structure.VStructureTemplateManager;
+import com.casiowatch123.vchunklib.generation.virtual.VUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplateManager;
@@ -39,7 +38,7 @@ public class FossilFeatureMixin {
     )
     private StructureTemplateManager redirectedGetStructureTemplateManager(MinecraftServer instance) {
         if (instance == null) {
-            return Builtin.STRUCTURE_TEMPLATE_MANAGER;
+            return VUtils.STRUCTURE_TEMPLATE_MANAGER;
         }
         return instance.getStructureTemplateManager();
     }
