@@ -8,7 +8,8 @@
         "CappedStructureProcessorMixin", 
         "FossilFeatureMixin", 
         "EntityTypeMixin", 
-        "PaleMossTreeDecoratorMixin"
+        "PaleMossTreeDecoratorMixin", 
+        "ItemFrameEntityMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

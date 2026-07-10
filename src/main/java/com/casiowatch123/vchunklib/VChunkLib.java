@@ -10,6 +10,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.BoundedRegionArray;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -28,27 +29,21 @@ public class VChunkLib implements ModInitializer {
 
     @Override
     public void onInitialize() {
-//        long seed = new Random().nextLong();
-        
+//        long seed = 263674943826304593L;
+//
 //        LOGGER.info("hello fabric world! {}", seed);
 //        ClientLifecycleEvents.CLIENT_STARTED.register(c -> {
 //            var drm = VUtils.createVanillaRegistryManager();
 //            VWorldService worldService = new VWorldService(
-//                    drm, 
-//                    VUtils.createDimensionArg(World.OVERWORLD, drm), 
+//                    drm,
+//                    VUtils.createDimensionArg(World.END, drm),
 //                    seed);
 //
 //            VChunkLoadingManager manager = new VChunkLoadingManager(worldService);
 //
-//            Chunk chunk = manager.loadChunk(new ChunkPos(0, 0), 0).get(0, 0);
-//            
-//            for(int i = -64; i < 100; i++) {
-//                LOGGER.info("{}: {}", i, chunk.getBlockState(new BlockPos(0, i, 0)));
-//            }
-//            for(int i = 0; i < 5000; i++) {
-//                manager.loadChunk(new ChunkPos(i, i), 0);
-//                System.out.println(i + " load success");
-//            }
+//            BoundedRegionArray<Chunk> chunkRegion = manager.loadChunk(new ChunkPos(10000, 20000), 62);
+//
+//            LOGGER.info("{}", chunkRegion.get(10000,20000).getBlockState(new BlockPos(0, 20, 0)));
 //        });
 //        System.out.println("escape");
     }
